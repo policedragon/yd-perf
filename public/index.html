@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>永定绩效 · 打击办案积分管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f6;color:#1f2329;padding-bottom:64px;font-size:14px}
+.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:90;box-shadow:0 2px 10px rgba(30,58,138,.25)}
+.top h1{font-size:16px;font-weight:600}
+.top .sub{font-size:11px;opacity:.85;margin-top:3px}
+.top .who{position:absolute;right:14px;top:12px;font-size:12px;background:rgba(255,255,255,.22);padding:5px 11px;border-radius:14px;cursor:pointer}
+.wrap{padding:12px;max-width:1000px;margin:0 auto}
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.card h3{font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.stats .s{background:#fff;border-radius:10px;padding:12px 6px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.stats .s .n{font-size:20px;font-weight:700;color:#2563eb}
+.stats .s .l{font-size:11px;color:#6b7280;margin-top:3px}
+.stats .s.warn .n{color:#f59e0b}.stats .s.danger .n{color:#ef4444}.stats .s.ok .n{color:#10b981}
+.task{border-left:4px solid #2563eb;padding:11px 12px;margin-bottom:9px;background:#fafbfd;border-radius:8px;cursor:pointer}
+.task.overdue{border-left-color:#ef4444;background:#fef5f5}
+.task.done{border-left-color:#10b981;background:#f4fdf9;opacity:.85}
+.task.review{border-left-color:#f59e0b;background:#fffbeb}
+.task .t{font-weight:600;font-size:14px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.task .t .no{font-size:11px;color:#9ca3af;font-weight:400}
+.task .m{font-size:11px;color:#6b7280;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:9px;background:#e5e7eb;color:#4b5563;white-space:nowrap}
+.tag.blue{background:#dbeafe;color:#1e40af}.tag.red{background:#fee2e2;color:#991b1b}
+.tag.green{background:#d1fae5;color:#065f46}.tag.orange{background:#ffedd5;color:#9a3412}
+.tag.purple{background:#ede9fe;color:#5b21b6}.tag.gray{background:#f3f4f6;color:#6b7280}
+.pbar{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:7px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:3px}
+.pbar.red i{background:linear-gradient(90deg,#ef4444,#f87171)}
+.btn{display:inline-block;padding:8px 15px;border-radius:8px;border:none;font-size:13px;cursor:pointer;background:#2563eb;color:#fff;font-family:inherit}
+.btn.sm{padding:5px 11px;font-size:12px}
+.btn.gray{background:#e5e7eb;color:#374151}.btn.red{background:#ef4444}
+.btn.green{background:#10b981}.btn.orange{background:#f59e0b}
+.btn.full{width:100%;padding:11px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.room{background:#f7f9fc;border-radius:10px;padding:10px;height:300px;overflow-y:auto;margin:10px 0;border:1px solid #eef1f6}
+.msg{margin-bottom:12px}
+.msg .h{font-size:11px;color:#6b7280;margin-bottom:3px;display:flex;gap:6px;flex-wrap:wrap}
+.msg .h .who{color:#2563eb;font-weight:600}
+.msg .c{font-size:13px;background:#fff;padding:8px 11px;border-radius:9px;display:inline-block;max-width:88%;word-break:break-word;line-height:1.5;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.msg.sys .c{background:#fef3c7;color:#92400e;font-size:12px}
+.msg.mine{text-align:right}.msg.mine .c{background:#dbeafe;color:#1e3a8a}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1;padding:10px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:13px;outline:none}
+.input-row input:focus{border-color:#2563eb}
+.tabs{display:flex;background:#fff;position:fixed;bottom:0;left:0;right:0;border-top:1px solid #e5e7eb;z-index:90;max-width:1000px;margin:0 auto}
+.tabs div{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:#6b7280;cursor:pointer}
+.tabs div.active{color:#2563eb;font-weight:600}
+.tabs div .i{font-size:19px;display:block;line-height:1.3}
+.empty{text-align:center;padding:36px 16px;color:#9ca3af;font-size:13px}
+.empty .e{font-size:36px;display:block;margin-bottom:8px;opacity:.5}
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:14px;padding:18px;width:100%;max-width:500px;max-height:88vh;overflow-y:auto}
+.modal h3{margin-bottom:14px;font-size:16px}
+.fi{margin-bottom:12px}
+.fi label{display:block;font-size:12px;color:#374151;margin-bottom:5px;font-weight:500}
+.fi label .req{color:#ef4444}
+.fi input,.fi select,.fi textarea{width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none;font-family:inherit}
+.fi textarea{resize:vertical;min-height:56px}
+.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:#2563eb}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f3f4f6;font-size:13px}
+.sc .p{font-weight:600;color:#2563eb}.sc .p.minus{color:#ef4444}
+.sc .d{font-size:11px;color:#9ca3af;margin-top:2px}
+.hint{font-size:11px;color:#9ca3af;margin-top:5px;line-height:1.5}
+.notice{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:8px 11px;border-radius:8px;font-size:12px;margin-bottom:10px}
+.quick-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>永定绩效 · 打击办案积分管理</h1>
+  <div class="sub">任务协作 · 全程留痕 · 积分考核</div>
+  <div class="who" id="who" onclick="switchUser()">未登录</div>
+</div>
+
+<div class="wrap">
+  <div id="p-home">
+    <div class="notice" id="notice" style="display:none"></div>
+    <div class="stats">
+      <div class="s"><div class="n" id="n-total">0</div><div class="l">我的任务</div></div>
+      <div class="s warn"><div class="n" id="n-run">0</div><div class="l">进行中</div></div>
+      <div class="s danger"><div class="n" id="n-over">0</div><div class="l">已超期</div></div>
+      <div class="s ok"><div class="n" id="n-score">0</div><div class="l">我的积分</div></div>
+    </div>
+    <div class="card">
+      <h3>我的任务
+        <span>
+          <button class="btn sm" onclick="openCreate()">+ 新建</button>
+          <button class="btn sm gray" onclick="loadTasks()">刷新</button>
+        </span>
+      </h3>
+      <div id="taskList"><div class="empty">加载中…</div></div>
+    </div>
+    <div class="card">
+      <h3>积分明细 <span class="hint">攻坚+5 · 线索+3 · 整改+2 · 超期-0.5/天</span></h3>
+      <div id="scoreList"></div>
+    </div>
+  </div>
+  <div id="p-detail" style="display:none"></div>
+</div>
+
+<div class="tabs">
+  <div class="active" onclick="go('home')"><span class="i">📋</span>任务</div>
+  <div onclick="go('home');setTimeout(()=>document.getElementById('scoreList').scrollIntoView({behavior:'smooth'}),100)"><span class="i">🏆</span>积分</div>
+  <div onclick="switchUser()"><span class="i">👤</span>身份</div>
+</div>
+
+<div class="modal-bg" id="createM">
+  <div class="modal">
+    <h3>新建任务</h3>
+    <div class="fi"><label>任务标题 <span class="req">*</span></label><input id="f-title" placeholder="如：核查XX线索"></div>
+    <div class="row2">
+      <div class="fi"><label>类型</label>
+        <select id="f-type">
+          <option>专项攻坚</option><option>线索核查</option><option>案件协作</option>
+          <option>执法整改</option><option>值班督办</option><option>培训学习</option><option>临时任务</option>
+        </select>
+      </div>
+      <div class="fi"><label>优先级</label>
+        <select id="f-pri"><option value="1">高</option><option value="2" selected>中</option><option value="3">低</option></select>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="fi"><label>截止时间 <span class="req">*</span></label><input id="f-end" type="datetime-local"></div>
+      <div class="fi"><label>主办人</label><input id="f-host" placeholder="默认本人"></div>
+    </div>
+    <div class="fi"><label>协办人（逗号分隔）</label><input id="f-assist" placeholder="如：李警官,王辅警"></div>
+    <div class="fi"><label>关联案号/线索号</label><input id="f-case"></div>
+    <div class="fi"><label>成果要求</label><textarea id="f-req"></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn gray full" onclick="closeM('createM')">取消</button>
+      <button class="btn full" onclick="createTask()">创建任务</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = location.origin + '/api';
+let me = JSON.parse(localStorage.getItem('yd_me') || 'null');
+let currentTaskId = null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = s => { if(!s) return '未设置'; const d = new Date(s.replace(' ','T')); return `${d.getMonth()+1}-${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+const fmtT = s => { const d = new Date(s.replace(' ','T')); return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+
+function switchUser() {
+  const name = prompt('输入姓名（区分身份）\n已有：张警官、李警官、刘队长、王辅警、陈联络员', me?.name || '张警官');
+  if (!name) return;
+  const role = prompt('选择角色（复制下列之一）\n系统管理员、所领导、打击队长、内勤人员、法制员、综合指挥室、社区警务队、主办人(民警)、协办人(民警)、普通民警、辅警、警务联络员、保安员、审计员', me?.role || '主办人(民警)');
+  if (!role) return;
+  fetch(API+'/user/login', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ name, role })
+  }).then(r => r.json()).then(u => {
+    me = u; localStorage.setItem('yd_me', JSON.stringify(me));
+    $('who').textContent = '👤 '+me.name+' · '+me.role;
+    loadTasks(); loadScores();
+  });
+}
+
+function go(p) {
+  $('p-home').style.display = p==='home'?'block':'none';
+  $('p-detail').style.display = p==='detail'?'block':'none';
+  if (p==='home') { loadTasks(); loadScores(); }
+  document.querySelectorAll('.tabs div').forEach((e,i)=>e.classList.toggle('active', i===0&&p==='home'));
+  window.scrollTo(0,0);
+}
+
+function loadTasks() {
+  if (!me) return;
+  fetch(API+'/tasks?user='+encodeURIComponent(me.name))
+    .then(r=>r.json()).then(list => {
+      const now = new Date();
+      const my = list;
+      $('n-total').textContent = my.length;
+      $('n-run').textContent = my.filter(t=>t.status==='RUNNING'||t.status==='PENDING'||t.status==='REVIEW').length;
+      const over = my.filter(t => (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < now);
+      $('n-over').textContent = over.length;
+      if (over.length) {
+        $('notice').style.display='block';
+        $('notice').innerHTML = '⚠️ 您有 <b>'+over.length+'</b> 个超期任务，请尽快处理。超期每日扣0.5分，超期3天升级重点督办。';
+      } else { $('notice').style.display='none'; }
+
+      const box = $('taskList');
+      if (!my.length) { box.innerHTML = '<div class="empty"><span class="e">📭</span>暂无任务</div>'; return; }
+      const map = { PENDING:'待接收', RUNNING:'进行中', REVIEW:'待审核', DONE:'已完成', OVERDUE:'已超期', ARCHIVED:'已归档', CANCELED:'已取消' };
+      box.innerHTML = my.map(t => {
+        const ov = (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < now;
+        const cls = ov?'overdue':(t.status==='DONE'||t.status==='ARCHIVED'?'done':(t.status==='REVIEW'?'review':''));
+        return `<div class="task ${cls}" onclick="openTask(${t.id})">
+          <div class="t"><span>${esc(t.title)}</span><span class="no">${esc(t.task_no)}</span></div>
+          <div class="m">
+            <span class="tag blue">${esc(t.task_type)}</span>
+            <span class="tag ${ov?'red':(t.status==='DONE'?'green':(t.status==='REVIEW'?'orange':'purple'))}">${ov?'已超期':esc(map[t.status]||t.status)}</span>
+            ${t.priority==1?'<span class="tag red">高优先级</span>':''}
+            <span>截止 ${fmt(t.end_time)}</span>
+            ${t.case_no?'<span>案号 '+esc(t.case_no)+'</span>':''}
+          </div>
+          <div class="pbar ${ov?'red':''}"><i style="width:${t.progress||0}%"></i></div>
+        </div>`;
+      }).join('');
+    });
+}
+
+function loadScores() {
+  if (!me) return;
+  fetch(API+'/scores?user='+encodeURIComponent(me.name))
+    .then(r=>r.json()).then(list => {
+      const total = list.reduce((a,b)=>a+b.score,0);
+      $('n-score').textContent = total.toFixed(1);
+      $('scoreList').innerHTML = list.length ?
+        list.map(s=>`<div class="sc"><div><div>${esc(s.reason)}</div><div class="d">${esc(s.create_time)}</div></div><div class="p ${s.score<0?'minus':''}">${s.score>0?'+':''}${s.score}</div></div>`).join('')
+        : '<div class="empty" style="padding:18px"><span class="e">🏆</span>暂无积分记录</div>';
+    });
+}
+
+function openTask(id) {
+  currentTaskId = id;
+  fetch(API+'/task/'+id).then(r=>r.json()).then(t => {
+    const ov = (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < new Date();
+    const readonly = t.status==='DONE'||t.status==='ARCHIVED';
+    const canManage = t.host_user===me.name;
+    const canReview = ['打击队长','所领导','法制员'].includes(me.role) && t.status==='REVIEW';
+
+    $('p-detail').innerHTML = `
+      <button class="btn gray sm" onclick="go('home')" style="margin-bottom:12px">← 返回</button>
+      <div class="card">
+        <div style="font-size:16px;font-weight:600;margin-bottom:8px">${esc(t.title)}</div>
+        <div class="m" style="font-size:12px;color:#6b7280;display:flex;flex-wrap:wrap;gap:10px">
+          <span class="tag blue">${esc(t.task_type)}</span>
+          <span class="tag ${ov?'red':(readonly?'green':'purple')}">${ov?'已超期':esc(t.status)}</span>
+          ${t.priority==1?'<span class="tag red">高优先级</span>':''}
+          <span>编号：<b>${esc(t.task_no)}</b></span>
+        </div>
+        <div style="font-size:12px;color:#6b7280;margin-top:8px;display:flex;flex-wrap:wrap;gap:10px">
+          <span>主办：<b>${esc(t.host_user)}</b></span>
+          <span>协办：<b>${esc(t.assist_users||'无')}</b></span>
+          <span>截止：<b>${fmt(t.end_time)}</b></span>
+        </div>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px">成果要求：<b>${esc(t.result_req||'无')}</b></div>
+        <div class="pbar ${ov?'red':''}" style="margin-top:12px"><i style="width:${t.progress||0}%"></i></div>
+        <div style="font-size:12px;color:#6b7280;margin-top:6px;display:flex;justify-content:space-between">
+          <span>进度 <b>${t.progress||0}%</b></span>
+          ${readonly?'<span class="tag gray">已归档 · 协作室只读</span>':'<span class="tag green">协作中</span>'}
+        </div>
+        <div class="quick-actions">
+          ${canManage&&!readonly?`<button class="btn sm" onclick="updateProgress()">更新进度</button>`:''}
+          ${canManage&&!readonly?`<button class="btn sm orange" onclick="submitResult()">提交成果</button>`:''}
+          ${canReview?`<button class="btn sm green" onclick="reviewTask(1)">审核通过</button><button class="btn sm red" onclick="reviewTask(0)">审核退回</button>`:''}
+        </div>
+
+        <div style="margin-top:18px;font-size:13px;font-weight:600;display:flex;justify-content:space-between">
+          <span>任务协作室 <span class="hint" style="display:inline">（全程留痕 · 禁止私聊）</span></span>
+          <span class="tag gray">${t.msgs.length} 条</span>
+        </div>
+        <div class="room" id="roomBox">
+          ${t.msgs.map(m => {
+            if (m.is_sys) return `<div class="msg sys"><div class="h"><span class="who">系统</span><span>${fmtT(m.create_time)}</span></div><div class="c">${esc(m.content)}</div></div>`;
+            const mine = m.sender===me.name;
+            return `<div class="msg ${mine?'mine':''}"><div class="h"><span class="who">${esc(m.sender)}</span><span>${fmtT(m.create_time)}</span></div><div class="c">${esc(m.content)}</div></div>`;
+          }).join('')}
+        </div>
+        ${!readonly ? `
+          <div class="input-row">
+            <input id="msgIn" placeholder="输入业务消息（禁止闲聊，敏感词自动拦截）" onkeydown="if(event.key==='Enter')sendMsg()">
+            <button class="btn" onclick="sendMsg()">发送</button>
+          </div>
+          <div class="quick-actions">
+            <button class="btn sm gray" onclick="quickMsg('已接收任务，立即开展')">已接收</button>
+            <button class="btn sm gray" onclick="quickMsg('已联系相关人员，正在核实')">已联系</button>
+            <button class="btn sm gray" onclick="quickMsg('材料已上传，请查阅')">材料上传</button>
+          </div>
+          <div class="hint">消息一经发送永久留存，不可撤回、不可删除。</div>
+        ` : '<div class="hint" style="text-align:center;padding:10px">任务已归档，协作室永久只读</div>'}
+      </div>`;
+    go('detail');
+    setTimeout(()=>{const r=$('roomBox'); if(r)r.scrollTop=r.scrollHeight;},50);
+  });
+}
+
+const SENSITIVE = ['涉密','机密','绝密','身份证号'];
+function sendMsg() {
+  const inp = $('msgIn'); const v = inp.value.trim();
+  if (!v) return;
+  for (const w of SENSITIVE) if (v.includes(w)) return alert('内容含敏感词「'+w+'」，已被拦截');
+  fetch(API+'/task/'+currentTaskId+'/message', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ content:v, sender:me.name })
+  }).then(r=>r.json()).then(()=>{ inp.value=''; openTask(currentTaskId); });
+}
+function quickMsg(v) { $('msgIn').value = v; sendMsg(); }
+
+function updateProgress() {
+  const p = prompt('当前进度（0-100）：', '50');
+  if (p===null) return;
+  fetch(API+'/task/'+currentTaskId+'/progress', { method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ progress: parseInt(p)||0, operator: me.name })
+  }).then(()=>openTask(currentTaskId));
+}
+
+function submitResult() {
+  const r = prompt('成果说明（将提交审核）：', '已完成，附相关材料');
+  if (r===null) return;
+  fetch(API+'/task/'+currentTaskId+'/submit', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ content: r, operator: me.name })
+  }).then(()=>{ alert('成果已提交，等待审核'); openTask(currentTaskId); });
+}
+
+function reviewTask(pass) {
+  if (!confirm(pass?'确认审核通过？通过后积分自动入账，协作室归档。':'确认退回？')) return;
+  fetch(API+'/task/'+currentTaskId+'/review', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ pass: !!pass, operator: me.name })
+  }).then(()=>{ alert(pass?'审核通过，积分已入账':'已退回'); openTask(currentTaskId); });
+}
+
+function openCreate() {
+  $('createM').classList.add('show');
+  const d = new Date(); d.setDate(d.getDate()+3);
+  $('f-end').value = d.toISOString().slice(0,16);
+}
+function closeM(id) { $(id).classList.remove('show'); }
+
+function createTask() {
+  const title = $('f-title').value.trim();
+  if (!title) return alert('请输入任务标题');
+  const assist = $('f-assist').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  fetch(API+'/task', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      title: title,
+      task_type: $('f-type').value,
+      priority: parseInt($('f-pri').value),
+      end_time: $('f-end').value.replace('T',' '),
+      host_user: $('f-host').value.trim() || me.name,
+      assist_users: assist,
+      case_no: $('f-case').value.trim(),
+      result_req: $('f-req').value.trim(),
+      operator: me.name
+    })
+  }).then(r=>r.json()).then(res => {
+    if (res.error) return alert(res.error);
+    closeM('createM');
+    $('f-title').value=''; $('f-req').value=''; $('f-assist').value=''; $('f-case').value='';
+    alert('任务已创建，协作室已自动生成');
+    loadTasks();
+  });
+}
+
+if (me) { $('who').textContent = '👤 '+me.name+' · '+me.role; loadTasks(); loadScores(); }
+else { setTimeout(switchUser, 500); }
+</script>
+</body>
+</html>
