@@ -7,15 +7,18 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f6;color:#1f2329;padding-bottom:64px;font-size:14px}
-.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:90;box-shadow:0 2px 10px rgba(30,58,138,.25)}
+.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:90;box-shadow:0 2px 10px rgba(30,58,138,.25)}
 .top h1{font-size:16px;font-weight:600}
 .top .sub{font-size:11px;opacity:.85;margin-top:3px}
-.top .who{position:absolute;right:14px;top:12px;font-size:12px;background:rgba(255,255,255,.22);padding:5px 11px;border-radius:14px;cursor:pointer}
+.top .who{position:absolute;right:14px;top:10px;font-size:12px;background:rgba(255,255,255,.22);padding:5px 11px;border-radius:14px;cursor:pointer;color:#fff}
+.top .demo{position:absolute;right:14px;top:42px;font-size:11px}
+.top .demo select{font-size:11px;padding:3px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;outline:none}
+.top .demo select option{color:#1f2329}
 .wrap{padding:12px;max-width:1000px;margin:0 auto}
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
 .card h3{font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.stats .s{background:#fff;border-radius:10px;padding:12px 6px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.stats .s{background:#fff;border-radius:10px;padding:12px 6px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer}
 .stats .s .n{font-size:20px;font-weight:700;color:#2563eb}
 .stats .s .l{font-size:11px;color:#6b7280;margin-top:3px}
 .stats .s.warn .n{color:#f59e0b}.stats .s.danger .n{color:#ef4444}.stats .s.ok .n{color:#10b981}
@@ -23,6 +26,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .task.overdue{border-left-color:#ef4444;background:#fef5f5}
 .task.done{border-left-color:#10b981;background:#f4fdf9;opacity:.85}
 .task.review{border-left-color:#f59e0b;background:#fffbeb}
+.task.final{border-left-color:#a855f7;background:#faf5ff}
 .task .t{font-weight:600;font-size:14px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
 .task .t .no{font-size:11px;color:#9ca3af;font-weight:400}
 .task .m{font-size:11px;color:#6b7280;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -30,13 +34,14 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .tag.blue{background:#dbeafe;color:#1e40af}.tag.red{background:#fee2e2;color:#991b1b}
 .tag.green{background:#d1fae5;color:#065f46}.tag.orange{background:#ffedd5;color:#9a3412}
 .tag.purple{background:#ede9fe;color:#5b21b6}.tag.gray{background:#f3f4f6;color:#6b7280}
+.tag.pink{background:#fce7f3;color:#9d174d}
 .pbar{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:7px}
 .pbar i{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:3px}
 .pbar.red i{background:linear-gradient(90deg,#ef4444,#f87171)}
 .btn{display:inline-block;padding:8px 15px;border-radius:8px;border:none;font-size:13px;cursor:pointer;background:#2563eb;color:#fff;font-family:inherit}
 .btn.sm{padding:5px 11px;font-size:12px}
 .btn.gray{background:#e5e7eb;color:#374151}.btn.red{background:#ef4444}
-.btn.green{background:#10b981}.btn.orange{background:#f59e0b}
+.btn.green{background:#10b981}.btn.orange{background:#f59e0b}.btn.purple{background:#a855f7}
 .btn.full{width:100%;padding:11px;font-size:14px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .room{background:#f7f9fc;border-radius:10px;padding:10px;height:300px;overflow-y:auto;margin:10px 0;border:1px solid #eef1f6}
@@ -50,9 +55,10 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .input-row input{flex:1;padding:10px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:13px;outline:none}
 .input-row input:focus{border-color:#2563eb}
 .tabs{display:flex;background:#fff;position:fixed;bottom:0;left:0;right:0;border-top:1px solid #e5e7eb;z-index:90;max-width:1000px;margin:0 auto}
-.tabs div{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:#6b7280;cursor:pointer}
+.tabs div{flex:1;text-align:center;padding:8px 0 6px;font-size:11px;color:#6b7280;cursor:pointer;position:relative}
 .tabs div.active{color:#2563eb;font-weight:600}
 .tabs div .i{font-size:19px;display:block;line-height:1.3}
+.tabs .dot{position:absolute;top:6px;right:22%;min-width:16px;height:16px;background:#ef4444;color:#fff;border-radius:8px;font-size:10px;line-height:16px;text-align:center;padding:0 3px}
 .empty{text-align:center;padding:36px 16px;color:#9ca3af;font-size:13px}
 .empty .e{font-size:36px;display:block;margin-bottom:8px;opacity:.5}
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
@@ -62,7 +68,7 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .fi{margin-bottom:12px}
 .fi label{display:block;font-size:12px;color:#374151;margin-bottom:5px;font-weight:500}
 .fi label .req{color:#ef4444}
-.fi input,.fi select,.fi textarea{width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none;font-family:inherit}
+.fi input,.fi select,.fi textarea{width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none;font-family:inherit;background:#fff}
 .fi textarea{resize:vertical;min-height:56px}
 .fi input:focus,.fi select:focus,.fi textarea:focus{border-color:#2563eb}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -72,31 +78,93 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .hint{font-size:11px;color:#9ca3af;margin-top:5px;line-height:1.5}
 .notice{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:8px 11px;border-radius:8px;font-size:12px;margin-bottom:10px}
 .quick-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}}
+.login-box{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#2563eb);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px}
+.login-card{background:#fff;border-radius:16px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-card h1{font-size:19px;text-align:center;color:#1e3a8a;margin-bottom:6px}
+.login-card .sub{font-size:12px;color:#6b7280;text-align:center;margin-bottom:22px}
+.login-card .fi label{font-size:12px}
+.login-card select{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:14px;outline:none;margin-bottom:14px;background:#fff}
+.login-card input{width:100%;padding:11px 12px;border:1px solid #d1d5db;border-radius:9px;font-size:14px;outline:none;margin-bottom:14px}
+.login-card input:focus,.login-card select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.login-card button{width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:9px;font-size:15px;cursor:pointer;font-family:inherit}
+.login-card .tip{font-size:11px;color:#9ca3af;text-align:center;margin-top:14px;line-height:1.6}
+.demo-badge{display:inline-block;background:#fef3c7;color:#92400e;font-size:10px;padding:2px 6px;border-radius:6px;margin-left:6px}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.row2{grid-template-columns:1fr}.top .demo{position:static;display:block;margin-top:6px}}
 </style>
 </head>
 <body>
 
+<!-- 登录页 -->
+<div class="login-box" id="loginBox">
+  <div class="login-card">
+    <h1>永定绩效</h1>
+    <div class="sub">打击办案积分管理系统 · 演示版</div>
+    <label style="font-size:12px;color:#374151;display:block;margin-bottom:5px">选择账号</label>
+    <select id="loginUser">
+      <option value="">— 请选择演示账号 —</option>
+      <option value="张所">张所（所领导）</option>
+      <option value="刘队长">刘队长（打击队长）</option>
+      <option value="陈副队">陈副队（副队长）</option>
+      <option value="张警官">张警官（主办人·民警）</option>
+      <option value="李警官">李警官（普通民警）</option>
+      <option value="王辅警">王辅警（辅警）</option>
+      <option value="赵辅警">赵辅警（辅警）</option>
+      <option value="陈联络员">陈联络员（警务联络员）</option>
+      <option value="孙保安">孙保安（保安员）</option>
+      <option value="周法制">周法制（法制员）</option>
+      <option value="吴内勤">吴内勤（内勤人员）</option>
+      <option value="郑指挥">郑指挥（综合指挥室）</option>
+      <option value="王社区">王社区（社区警务队）</option>
+      <option value="审审计">审审计（审计员）</option>
+      <option value="系统管理员">系统管理员</option>
+    </select>
+    <label style="font-size:12px;color:#374151;display:block;margin-bottom:5px">密码</label>
+    <input id="loginPwd" type="password" value="123456" placeholder="演示密码：123456">
+    <button onclick="doLogin()">登 录</button>
+    <div class="tip">演示密码统一为 123456<br>登录后可点右上角"身份"随时切换</div>
+  </div>
+</div>
+
 <div class="top">
   <h1>永定绩效 · 打击办案积分管理</h1>
   <div class="sub">任务协作 · 全程留痕 · 积分考核</div>
-  <div class="who" id="who" onclick="switchUser()">未登录</div>
+  <div class="who" id="who" onclick="logout()">未登录</div>
+  <div class="demo" id="demoBox" style="display:none">
+    <select id="demoSwitch" onchange="demoSwitchUser(this.value)">
+      <option value="">演示切换…</option>
+      <option value="张所">张所（所领导）</option>
+      <option value="刘队长">刘队长（打击队长）</option>
+      <option value="陈副队">陈副队（副队长）</option>
+      <option value="张警官">张警官（主办人）</option>
+      <option value="李警官">李警官（普通民警）</option>
+      <option value="王辅警">王辅警（辅警）</option>
+      <option value="赵辅警">赵辅警（辅警）</option>
+      <option value="陈联络员">陈联络员（联络员）</option>
+      <option value="孙保安">孙保安（保安员）</option>
+      <option value="周法制">周法制（法制员）</option>
+      <option value="吴内勤">吴内勤（内勤）</option>
+      <option value="郑指挥">郑指挥（指挥室）</option>
+      <option value="王社区">王社区（社区队）</option>
+      <option value="审审计">审审计（审计员）</option>
+    </select>
+  </div>
 </div>
 
 <div class="wrap">
   <div id="p-home">
     <div class="notice" id="notice" style="display:none"></div>
     <div class="stats">
-      <div class="s"><div class="n" id="n-total">0</div><div class="l">我的任务</div></div>
-      <div class="s warn"><div class="n" id="n-run">0</div><div class="l">进行中</div></div>
-      <div class="s danger"><div class="n" id="n-over">0</div><div class="l">已超期</div></div>
-      <div class="s ok"><div class="n" id="n-score">0</div><div class="l">我的积分</div></div>
+      <div class="s warn" onclick="filterTasks('run')"><div class="n" id="n-run">0</div><div class="l">进行中</div></div>
+      <div class="s" onclick="filterTasks('review')"><div class="n" id="n-review">0</div><div class="l">待我审</div></div>
+      <div class="s danger" onclick="filterTasks('overdue')"><div class="n" id="n-over">0</div><div class="l">超期</div></div>
+      <div class="s ok" onclick="filterTasks('all')"><div class="n" id="n-score">0</div><div class="l">我的积分</div></div>
     </div>
     <div class="card">
-      <h3>我的任务
+      <h3><span>任务列表 <span class="demo-badge" id="scopeBadge"></span></span>
         <span>
-          <button class="btn sm" onclick="openCreate()">+ 新建</button>
-          <button class="btn sm gray" onclick="loadTasks()">刷新</button>
+          <button class="btn sm gray" onclick="filterTasks('all')">全部</button>
+          <button class="btn sm" id="btnCreate" onclick="openCreate()" style="display:none">+ 新建</button>
+          <button class="btn sm gray" onclick="loadTasks();loadScores();checkTodo()">刷新</button>
         </span>
       </h3>
       <div id="taskList"><div class="empty">加载中…</div></div>
@@ -107,12 +175,15 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
     </div>
   </div>
   <div id="p-detail" style="display:none"></div>
+  <div id="p-todo" style="display:none"></div>
+  <div id="p-logs" style="display:none"></div>
 </div>
 
 <div class="tabs">
-  <div class="active" onclick="go('home')"><span class="i">📋</span>任务</div>
-  <div onclick="go('home');setTimeout(()=>document.getElementById('scoreList').scrollIntoView({behavior:'smooth'}),100)"><span class="i">🏆</span>积分</div>
-  <div onclick="switchUser()"><span class="i">👤</span>身份</div>
+  <div class="active" data-tab="home" onclick="go('home')"><span class="i">📋</span>任务<span class="dot" id="dotHome" style="display:none"></span></div>
+  <div data-tab="todo" onclick="go('todo')"><span class="i">✅</span>待办<span class="dot" id="dotTodo" style="display:none"></span></div>
+  <div data-tab="logs" id="tabLogs" style="display:none" onclick="go('logs')"><span class="i">🔍</span>日志</div>
+  <div data-tab="me" onclick="logout()"><span class="i">👤</span>身份</div>
 </div>
 
 <div class="modal-bg" id="createM">
@@ -144,73 +215,146 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
   </div>
 </div>
 
+<div class="modal-bg" id="todoM">
+  <div class="modal">
+    <h3>待办提醒</h3>
+    <div id="todoContent"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn full" onclick="closeM('todoM')">知道了</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = location.origin + '/api';
 let me = JSON.parse(localStorage.getItem('yd_me') || 'null');
 let currentTaskId = null;
+let taskFilter = 'all';
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = s => { if(!s) return '未设置'; const d = new Date(s.replace(' ','T')); return `${d.getMonth()+1}-${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
 const fmtT = s => { const d = new Date(s.replace(' ','T')); return `${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
 
-function switchUser() {
-  const name = prompt('输入姓名（区分身份）\n已有：张警官、李警官、刘队长、王辅警、陈联络员', me?.name || '张警官');
-  if (!name) return;
-  const role = prompt('选择角色（复制下列之一）\n系统管理员、所领导、打击队长、内勤人员、法制员、综合指挥室、社区警务队、主办人(民警)、协办人(民警)、普通民警、辅警、警务联络员、保安员、审计员', me?.role || '主办人(民警)');
-  if (!role) return;
-  fetch(API+'/user/login', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name, role })
-  }).then(r => r.json()).then(u => {
-    me = u; localStorage.setItem('yd_me', JSON.stringify(me));
-    $('who').textContent = '👤 '+me.name+' · '+me.role;
-    loadTasks(); loadScores();
+function doLogin() {
+  const name = $('loginUser').value;
+  const pwd = $('loginPwd').value;
+  if (!name) return alert('请选择账号');
+  fetch(API+'/login', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ name, password: pwd })
+  }).then(r=>r.json()).then(u => {
+    if (u.error) return alert(u.error);
+    me = u;
+    localStorage.setItem('yd_me', JSON.stringify(me));
+    $('loginBox').style.display = 'none';
+    initUI();
   });
 }
 
+function demoSwitchUser(name) {
+  if (!name) return;
+  fetch(API+'/login', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ name, password: '123456' })
+  }).then(r=>r.json()).then(u => {
+    me = u;
+    localStorage.setItem('yd_me', JSON.stringify(me));
+    $('demoSwitch').value = '';
+    initUI();
+    go('home');
+  });
+}
+
+function logout() {
+  if (!confirm('确认退出登录？')) return;
+  localStorage.removeItem('yd_me');
+  me = null;
+  location.reload();
+}
+
+function initUI() {
+  $('who').textContent = '👤 '+me.name+' · '+me.role;
+  $('demoBox').style.display = 'block';
+  $('btnCreate').style.display = me.perm.create ? 'inline-block' : 'none';
+  $('tabLogs').style.display = ['审计员','系统管理员'].includes(me.role) ? 'block' : 'none';
+  const scopeText = { all:'全所可见', team:'本组可见', self:'仅本人可见' }[me.perm.scope] || '';
+  $('scopeBadge').textContent = scopeText;
+  loadTasks(); loadScores(); checkTodo(true);
+}
+
 function go(p) {
-  $('p-home').style.display = p==='home'?'block':'none';
-  $('p-detail').style.display = p==='detail'?'block':'none';
+  ['home','detail','todo','logs'].forEach(x => $('p-'+x).style.display = x===p?'block':'none');
+  document.querySelectorAll('.tabs div').forEach(e => e.classList.toggle('active', e.dataset.tab===p));
   if (p==='home') { loadTasks(); loadScores(); }
-  document.querySelectorAll('.tabs div').forEach((e,i)=>e.classList.toggle('active', i===0&&p==='home'));
+  if (p==='todo') renderTodo();
+  if (p==='logs') loadLogs();
   window.scrollTo(0,0);
+}
+
+function checkTodo(firstTime) {
+  if (!me) return;
+  fetch(API+'/todo?name='+encodeURIComponent(me.name))
+    .then(r=>r.json()).then(t => {
+      const total = t.total;
+      $('dotHome').style.display = total>0 ? 'block' : 'none';
+      $('dotHome').textContent = total>0 ? total : '';
+      $('dotTodo').style.display = total>0 ? 'block' : 'none';
+      $('dotTodo').textContent = total>0 ? total : '';
+      $('n-review').textContent = t.review + t.final;
+      if (firstTime && total>0) {
+        $('todoContent').innerHTML = `
+          <div class="sc"><div>新任务待接收</div><div class="p">${t.pending}</div></div>
+          <div class="sc"><div>待我审核</div><div class="p">${t.review}</div></div>
+          <div class="sc"><div>待我终审</div><div class="p">${t.final}</div></div>
+          <div class="sc"><div>已超期</div><div class="p minus">${t.overdue}</div></div>
+          <div class="hint">共 ${total} 项待办，可到「待办」页查看详情</div>
+        `;
+        $('todoM').classList.add('show');
+      }
+    });
 }
 
 function loadTasks() {
   if (!me) return;
-  fetch(API+'/tasks?user='+encodeURIComponent(me.name))
+  fetch(API+'/tasks?name='+encodeURIComponent(me.name))
     .then(r=>r.json()).then(list => {
       const now = new Date();
       const my = list;
-      $('n-total').textContent = my.length;
-      $('n-run').textContent = my.filter(t=>t.status==='RUNNING'||t.status==='PENDING'||t.status==='REVIEW').length;
+      $('n-run').textContent = my.filter(t=>t.status==='RUNNING'||t.status==='PENDING'||t.status==='REVIEW'||t.status==='FIRST_REVIEW').length;
       const over = my.filter(t => (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < now);
       $('n-over').textContent = over.length;
       if (over.length) {
         $('notice').style.display='block';
-        $('notice').innerHTML = '⚠️ 您有 <b>'+over.length+'</b> 个超期任务，请尽快处理。超期每日扣0.5分，超期3天升级重点督办。';
+        $('notice').innerHTML = '⚠️ 有 <b>'+over.length+'</b> 个超期任务，请尽快处理。超期每日扣0.5分。';
       } else { $('notice').style.display='none'; }
 
+      let display = my;
+      if (taskFilter==='run') display = my.filter(t=>['RUNNING','PENDING','REVIEW','FIRST_REVIEW'].includes(t.status));
+      if (taskFilter==='overdue') display = over;
+      if (taskFilter==='review') display = my.filter(t=>t.canFirst||t.canFinal);
+
       const box = $('taskList');
-      if (!my.length) { box.innerHTML = '<div class="empty"><span class="e">📭</span>暂无任务</div>'; return; }
-      const map = { PENDING:'待接收', RUNNING:'进行中', REVIEW:'待审核', DONE:'已完成', OVERDUE:'已超期', ARCHIVED:'已归档', CANCELED:'已取消' };
-      box.innerHTML = my.map(t => {
+      if (!display.length) { box.innerHTML = '<div class="empty"><span class="e">📭</span>暂无任务</div>'; return; }
+      const map = { PENDING:'待接收', RUNNING:'进行中', REVIEW:'待审核', FIRST_REVIEW:'待终审', DONE:'已完成', OVERDUE:'已超期', ARCHIVED:'已归档', CANCELED:'已取消' };
+      box.innerHTML = display.map(t => {
         const ov = (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < now;
-        const cls = ov?'overdue':(t.status==='DONE'||t.status==='ARCHIVED'?'done':(t.status==='REVIEW'?'review':''));
+        const cls = ov?'overdue':(t.status==='DONE'||t.status==='ARCHIVED'?'done':(t.status==='FIRST_REVIEW'?'final':(t.status==='REVIEW'?'review':'')));
         return `<div class="task ${cls}" onclick="openTask(${t.id})">
           <div class="t"><span>${esc(t.title)}</span><span class="no">${esc(t.task_no)}</span></div>
           <div class="m">
             <span class="tag blue">${esc(t.task_type)}</span>
-            <span class="tag ${ov?'red':(t.status==='DONE'?'green':(t.status==='REVIEW'?'orange':'purple'))}">${ov?'已超期':esc(map[t.status]||t.status)}</span>
+            <span class="tag ${ov?'red':(t.status==='DONE'?'green':(t.status==='FIRST_REVIEW'?'pink':(t.status==='REVIEW'?'orange':'purple')))}">${ov?'已超期':esc(map[t.status]||t.status)}</span>
             ${t.priority==1?'<span class="tag red">高优先级</span>':''}
             <span>截止 ${fmt(t.end_time)}</span>
-            ${t.case_no?'<span>案号 '+esc(t.case_no)+'</span>':''}
+            ${t.canFirst?'<span class="tag orange">待我审</span>':''}
+            ${t.canFinal?'<span class="tag pink">待我终审</span>':''}
           </div>
           <div class="pbar ${ov?'red':''}"><i style="width:${t.progress||0}%"></i></div>
         </div>`;
       }).join('');
     });
 }
+
+function filterTasks(f) { taskFilter=f; loadTasks(); }
 
 function loadScores() {
   if (!me) return;
@@ -224,13 +368,43 @@ function loadScores() {
     });
 }
 
+function renderTodo() {
+  fetch(API+'/todo?name='+encodeURIComponent(me.name)).then(r=>r.json()).then(t => {
+    $('p-todo').innerHTML = `
+      <button class="btn gray sm" onclick="go('home')" style="margin-bottom:12px">← 返回</button>
+      <div class="card">
+        <h3>待办汇总</h3>
+        <div class="sc" onclick="filterTasks('run');go('home')" style="cursor:pointer"><div>新任务待接收</div><div class="p">${t.pending}</div></div>
+        <div class="sc" onclick="filterTasks('review');go('home')" style="cursor:pointer"><div>待我审核</div><div class="p">${t.review}</div></div>
+        <div class="sc" onclick="filterTasks('review');go('home')" style="cursor:pointer"><div>待我终审</div><div class="p">${t.final}</div></div>
+        <div class="sc" onclick="filterTasks('overdue');go('home')" style="cursor:pointer"><div>已超期</div><div class="p minus">${t.overdue}</div></div>
+        <div class="hint">点击任意一项可跳转到对应任务列表</div>
+      </div>
+    `;
+  });
+}
+
+function loadLogs() {
+  fetch(API+'/logs?name='+encodeURIComponent(me.name)).then(r=>r.json()).then(list => {
+    if (list.error) { $('p-logs').innerHTML = '<div class="empty">'+list.error+'</div>'; return; }
+    $('p-logs').innerHTML = `
+      <button class="btn gray sm" onclick="go('home')" style="margin-bottom:12px">← 返回</button>
+      <div class="card">
+        <h3>审计日志（最近200条）</h3>
+        ${list.map(l=>`<div class="sc"><div><div><b>${esc(l.user_name)}</b> ${esc(l.action)}</div><div class="d">${esc(l.detail)} · ${esc(l.create_time)}</div></div></div>`).join('')}
+      </div>
+    `;
+  });
+}
+
 function openTask(id) {
   currentTaskId = id;
   fetch(API+'/task/'+id).then(r=>r.json()).then(t => {
     const ov = (t.status==='RUNNING'||t.status==='PENDING') && t.end_time && new Date(t.end_time.replace(' ','T')) < new Date();
     const readonly = t.status==='DONE'||t.status==='ARCHIVED';
     const canManage = t.host_user===me.name;
-    const canReview = ['打击队长','所领导','法制员'].includes(me.role) && t.status==='REVIEW';
+    const canReview = t.canFirst || t.canFinal;
+    const map = { PENDING:'待接收', RUNNING:'进行中', REVIEW:'待审核', FIRST_REVIEW:'待终审', DONE:'已完成', OVERDUE:'已超期', ARCHIVED:'已归档' };
 
     $('p-detail').innerHTML = `
       <button class="btn gray sm" onclick="go('home')" style="margin-bottom:12px">← 返回</button>
@@ -238,124 +412,9 @@ function openTask(id) {
         <div style="font-size:16px;font-weight:600;margin-bottom:8px">${esc(t.title)}</div>
         <div class="m" style="font-size:12px;color:#6b7280;display:flex;flex-wrap:wrap;gap:10px">
           <span class="tag blue">${esc(t.task_type)}</span>
-          <span class="tag ${ov?'red':(readonly?'green':'purple')}">${ov?'已超期':esc(t.status)}</span>
+          <span class="tag ${ov?'red':(readonly?'green':(t.status==='FIRST_REVIEW'?'pink':'purple'))}">${ov?'已超期':esc(map[t.status]||t.status)}</span>
           ${t.priority==1?'<span class="tag red">高优先级</span>':''}
           <span>编号：<b>${esc(t.task_no)}</b></span>
         </div>
         <div style="font-size:12px;color:#6b7280;margin-top:8px;display:flex;flex-wrap:wrap;gap:10px">
-          <span>主办：<b>${esc(t.host_user)}</b></span>
-          <span>协办：<b>${esc(t.assist_users||'无')}</b></span>
-          <span>截止：<b>${fmt(t.end_time)}</b></span>
-        </div>
-        <div style="font-size:12px;color:#6b7280;margin-top:6px">成果要求：<b>${esc(t.result_req||'无')}</b></div>
-        <div class="pbar ${ov?'red':''}" style="margin-top:12px"><i style="width:${t.progress||0}%"></i></div>
-        <div style="font-size:12px;color:#6b7280;margin-top:6px;display:flex;justify-content:space-between">
-          <span>进度 <b>${t.progress||0}%</b></span>
-          ${readonly?'<span class="tag gray">已归档 · 协作室只读</span>':'<span class="tag green">协作中</span>'}
-        </div>
-        <div class="quick-actions">
-          ${canManage&&!readonly?`<button class="btn sm" onclick="updateProgress()">更新进度</button>`:''}
-          ${canManage&&!readonly?`<button class="btn sm orange" onclick="submitResult()">提交成果</button>`:''}
-          ${canReview?`<button class="btn sm green" onclick="reviewTask(1)">审核通过</button><button class="btn sm red" onclick="reviewTask(0)">审核退回</button>`:''}
-        </div>
-
-        <div style="margin-top:18px;font-size:13px;font-weight:600;display:flex;justify-content:space-between">
-          <span>任务协作室 <span class="hint" style="display:inline">（全程留痕 · 禁止私聊）</span></span>
-          <span class="tag gray">${t.msgs.length} 条</span>
-        </div>
-        <div class="room" id="roomBox">
-          ${t.msgs.map(m => {
-            if (m.is_sys) return `<div class="msg sys"><div class="h"><span class="who">系统</span><span>${fmtT(m.create_time)}</span></div><div class="c">${esc(m.content)}</div></div>`;
-            const mine = m.sender===me.name;
-            return `<div class="msg ${mine?'mine':''}"><div class="h"><span class="who">${esc(m.sender)}</span><span>${fmtT(m.create_time)}</span></div><div class="c">${esc(m.content)}</div></div>`;
-          }).join('')}
-        </div>
-        ${!readonly ? `
-          <div class="input-row">
-            <input id="msgIn" placeholder="输入业务消息（禁止闲聊，敏感词自动拦截）" onkeydown="if(event.key==='Enter')sendMsg()">
-            <button class="btn" onclick="sendMsg()">发送</button>
-          </div>
-          <div class="quick-actions">
-            <button class="btn sm gray" onclick="quickMsg('已接收任务，立即开展')">已接收</button>
-            <button class="btn sm gray" onclick="quickMsg('已联系相关人员，正在核实')">已联系</button>
-            <button class="btn sm gray" onclick="quickMsg('材料已上传，请查阅')">材料上传</button>
-          </div>
-          <div class="hint">消息一经发送永久留存，不可撤回、不可删除。</div>
-        ` : '<div class="hint" style="text-align:center;padding:10px">任务已归档，协作室永久只读</div>'}
-      </div>`;
-    go('detail');
-    setTimeout(()=>{const r=$('roomBox'); if(r)r.scrollTop=r.scrollHeight;},50);
-  });
-}
-
-const SENSITIVE = ['涉密','机密','绝密','身份证号'];
-function sendMsg() {
-  const inp = $('msgIn'); const v = inp.value.trim();
-  if (!v) return;
-  for (const w of SENSITIVE) if (v.includes(w)) return alert('内容含敏感词「'+w+'」，已被拦截');
-  fetch(API+'/task/'+currentTaskId+'/message', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ content:v, sender:me.name })
-  }).then(r=>r.json()).then(()=>{ inp.value=''; openTask(currentTaskId); });
-}
-function quickMsg(v) { $('msgIn').value = v; sendMsg(); }
-
-function updateProgress() {
-  const p = prompt('当前进度（0-100）：', '50');
-  if (p===null) return;
-  fetch(API+'/task/'+currentTaskId+'/progress', { method:'PUT', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ progress: parseInt(p)||0, operator: me.name })
-  }).then(()=>openTask(currentTaskId));
-}
-
-function submitResult() {
-  const r = prompt('成果说明（将提交审核）：', '已完成，附相关材料');
-  if (r===null) return;
-  fetch(API+'/task/'+currentTaskId+'/submit', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ content: r, operator: me.name })
-  }).then(()=>{ alert('成果已提交，等待审核'); openTask(currentTaskId); });
-}
-
-function reviewTask(pass) {
-  if (!confirm(pass?'确认审核通过？通过后积分自动入账，协作室归档。':'确认退回？')) return;
-  fetch(API+'/task/'+currentTaskId+'/review', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ pass: !!pass, operator: me.name })
-  }).then(()=>{ alert(pass?'审核通过，积分已入账':'已退回'); openTask(currentTaskId); });
-}
-
-function openCreate() {
-  $('createM').classList.add('show');
-  const d = new Date(); d.setDate(d.getDate()+3);
-  $('f-end').value = d.toISOString().slice(0,16);
-}
-function closeM(id) { $(id).classList.remove('show'); }
-
-function createTask() {
-  const title = $('f-title').value.trim();
-  if (!title) return alert('请输入任务标题');
-  const assist = $('f-assist').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
-  fetch(API+'/task', { method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      title: title,
-      task_type: $('f-type').value,
-      priority: parseInt($('f-pri').value),
-      end_time: $('f-end').value.replace('T',' '),
-      host_user: $('f-host').value.trim() || me.name,
-      assist_users: assist,
-      case_no: $('f-case').value.trim(),
-      result_req: $('f-req').value.trim(),
-      operator: me.name
-    })
-  }).then(r=>r.json()).then(res => {
-    if (res.error) return alert(res.error);
-    closeM('createM');
-    $('f-title').value=''; $('f-req').value=''; $('f-assist').value=''; $('f-case').value='';
-    alert('任务已创建，协作室已自动生成');
-    loadTasks();
-  });
-}
-
-if (me) { $('who').textContent = '👤 '+me.name+' · '+me.role; loadTasks(); loadScores(); }
-else { setTimeout(switchUser, 500); }
-</script>
-</body>
-</html>
+          <span>主办：<b>${esc(t.host_user)}</b></
